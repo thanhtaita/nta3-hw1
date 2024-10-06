@@ -1,0 +1,10 @@
+[debug] > Exec(eload, None, None)
+[error] Not a valid command: eload (similar: reload, loadp, bspReload)
+[error] Not a valid project ID: eload
+[error] Expected ':'
+[error] Not a valid key: eload (similar: onUnload, onLoad, testLoader)
+[error] eload
+[error]      ^
+[debug] > Exec(idea-shell, None, None)
+[debug] > Exec(, None, None)
+[debug] > Exec(idea-shell, None, None)

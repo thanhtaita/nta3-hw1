@@ -1,0 +1,32 @@
+[debug] > Exec(compile, None, None)
+[debug] Evaluating tasks: Compile / compile
+[debug] Running task... Cancel: Signal, check cycles: false, forcegc: true
+[info] compiling 1 Scala source to C:\Users\taita\IdeaProjects\LLMProject1\target\scala-2.13\classes ...
+[error] C:\Users\taita\IdeaProjects\LLMProject1\src\main\scala\Main.scala:43:25: not found: value config
+[error]       .minWordFrequency(config.getInt("word2vec.minWordFrequency"))
+[error]                         ^
+[error] C:\Users\taita\IdeaProjects\LLMProject1\src\main\scala\Main.scala:44:18: not found: value config
+[error]       .layerSize(config.getInt("word2vec.layerSize"))
+[error]                  ^
+[error] C:\Users\taita\IdeaProjects\LLMProject1\src\main\scala\Main.scala:45:13: not found: value config
+[error]       .seed(config.getLong("word2vec.seed"))
+[error]             ^
+[error] C:\Users\taita\IdeaProjects\LLMProject1\src\main\scala\Main.scala:46:19: not found: value config
+[error]       .windowSize(config.getInt("word2vec.windowSize"))
+[error]                   ^
+[error] C:\Users\taita\IdeaProjects\LLMProject1\src\main\scala\Main.scala:142:29: not found: value config
+[error]           .minWordFrequency(config.getInt("word2vec.minWordFrequency"))
+[error]                             ^
+[error] C:\Users\taita\IdeaProjects\LLMProject1\src\main\scala\Main.scala:143:22: not found: value config
+[error]           .layerSize(config.getInt("word2vec.layerSize"))
+[error]                      ^
+[error] C:\Users\taita\IdeaProjects\LLMProject1\src\main\scala\Main.scala:144:17: not found: value config
+[error]           .seed(config.getLong("word2vec.seed"))
+[error]                 ^
+[error] C:\Users\taita\IdeaProjects\LLMProject1\src\main\scala\Main.scala:145:23: not found: value config
+[error]           .windowSize(config.getInt("word2vec.windowSize"))
+[error]                       ^
+[error] 8 errors found
+[error] (Compile / compileIncremental) Compilation failed
+[error] Total time: 4 s, completed Oct 5, 2024, 10:25:27 PM
+[debug] > Exec(idea-shell, None, None)

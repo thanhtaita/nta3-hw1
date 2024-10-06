@@ -1,0 +1,1 @@
+C:\Users\taita\IdeaProjects\LLMProject1\src\test\resources\text_sentences.txt

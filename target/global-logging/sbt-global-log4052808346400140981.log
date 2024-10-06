@@ -1,0 +1,7 @@
+[debug] > Exec(compile, None, None)
+[debug] Evaluating tasks: Compile / compile
+[debug] Running task... Cancel: Signal, check cycles: false, forcegc: true
+[info] compiling 1 Scala source to C:\Users\taita\IdeaProjects\LLMProject1\target\scala-2.13\classes ...
+[info] done compiling
+[success] Total time: 8 s, completed Oct 5, 2024, 7:12:13 PM
+[debug] > Exec(idea-shell, None, None)
