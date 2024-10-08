@@ -1,3 +1,4 @@
+
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
 ThisBuild / scalaVersion := "2.13.15"
@@ -19,8 +20,22 @@ lazy val root = (project in file("."))
     libraryDependencies += "org.mockito" %% "mockito-scala" % "1.17.37" % Test, // Mockito for mocking
     libraryDependencies += "org.mockito" % "mockito-core" % "3.12.4" % Test,
     libraryDependencies += "org.scalatestplus" %% "mockito-3-4" % "3.2.10.0" % Test,
-    libraryDependencies += "com.typesafe" % "config" % "1.4.3"
-)
+    libraryDependencies += "com.typesafe" % "config" % "1.4.3",
+    // Assembly merge strategy
+    assembly / assemblyMergeStrategy := {
+      case PathList("META-INF", xs @ _*) =>
+          xs match {
+              case "MANIFEST.MF" :: Nil     => MergeStrategy.discard
+              case "services" :: _          => MergeStrategy.concat
+              case _                        => MergeStrategy.discard
+          }
+      case "reference.conf"            => MergeStrategy.concat
+      case x if x.endsWith(".proto")   => MergeStrategy.rename
+      case x if x.contains("hadoop")   => MergeStrategy.first
+      case _                           => MergeStrategy.first
+    }
+
+  )
 
 
 
