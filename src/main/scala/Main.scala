@@ -38,7 +38,7 @@ object HadoopAndDL4jProject {
       if (isHDFSPath(filePath)) {
         val config = new Configuration()
         val fs = FileSystem.get(config)
-        val inputStream = fs.open(new Path(filePath))
+        val inputStream = fs.open(new Path(fs.getUri+filePath))
         new BasicLineIterator(inputStream)
       } else {
         val file = new File(filePath)
@@ -163,11 +163,11 @@ object HadoopAndDL4jProject {
         val allWords = vec.vocab().words().asScala  // Use asScala from CollectionConverters
 
         // for testing
-        context.write(new Text("word"), new DoubleArrayWritable(2, Array(1.1, 1.2, 1.3)))
+//        context.write(new Text("word"), new DoubleArrayWritable(2, Array(1.1, 1.2, 1.3)))
 
-//        allWords.foreach(word => {
-//          context.write(new Text(word), new DoubleArrayWritable(vec.vocab.wordFrequency(word), vec.getWordVector(word)))
-//        })
+        allWords.foreach(word => {
+          context.write(new Text(word), new DoubleArrayWritable(vec.vocab.wordFrequency(word), vec.getWordVector(word)))
+        })
       } catch {
         case e: RuntimeException => log.error(s"${e.getMessage}")
         case e: IOException => log.error(s"${e.getMessage}")
