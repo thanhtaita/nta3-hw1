@@ -1,1 +1,1 @@
-src/test/resources/text_sentences.txt
+src/test/resources/text_sentences_short.txt
