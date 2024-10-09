@@ -25,7 +25,7 @@ class HadoopAndDL4jProjectTest extends AnyFlatSpec with MockitoSugar {
   "TokenizerMapper" should "process input file and write key-value pairs" in {
     // Mock the Mapper.Context
     val context = mock[Mapper[LongWritable, Text, Text, DoubleArrayWritable]#Context]
-    val inputText = new Text("src/test/resources/file1_dir.txt") // Mock input
+    val inputText = new Text("src/test/resources/short.txt") // Mock input
 
     // When
     val mapper = new TokenizerMapper

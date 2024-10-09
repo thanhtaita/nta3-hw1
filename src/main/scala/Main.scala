@@ -34,11 +34,11 @@ object HadoopAndDL4jProject {
 
   // get suitable SentenceIterator depends on system to work with Word2Vec from deeplearning4j
   def getSentenceIterator (filePath: String): SentenceIterator = {
+    val config = new Configuration()
+    val fs = FileSystem.get(config)
     try {
-      if (isHDFSPath(filePath)) {
-        val config = new Configuration()
-        val fs = FileSystem.get(config)
-        val inputStream = fs.open(new Path(fs.getUri+filePath))
+      if (isHDFSPath(fs.getUri.toString)) {
+        val inputStream = fs.open(new Path(fs.getUri + filePath))
         new BasicLineIterator(inputStream)
       } else {
         val file = new File(filePath)
@@ -147,17 +147,7 @@ object HadoopAndDL4jProject {
       log.info(s"Processing file path: $inputFilePath")
 
       try {
-        // Check if the first file exists and throw an exception if not
-        val file = new File(inputFilePath)
-        if (!file.exists()) {
-          throw new IOException(s"File not found: $inputFilePath")
-        }
-
-        // Read the content of the first file (expecting it to point to a second file path)
-        val content = scala.io.Source.fromFile(file).getLines().mkString("\n")
-        log.info(s"File content (path to second file): $content")
-
-        val vec: Word2Vec = trainModel(content)
+        val vec: Word2Vec = trainModel(inputFilePath)
 
         // Step 7: Pass key-value pair of words and embeddings to the reducer
         val allWords = vec.vocab().words().asScala  // Use asScala from CollectionConverters
