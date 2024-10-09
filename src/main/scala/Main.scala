@@ -162,9 +162,12 @@ object HadoopAndDL4jProject {
         // Step 7: Pass key-value pair of words and embeddings to the reducer
         val allWords = vec.vocab().words().asScala  // Use asScala from CollectionConverters
 
-        allWords.foreach(word => {
-          context.write(new Text(word), new DoubleArrayWritable(vec.vocab.wordFrequency(word), vec.getWordVector(word)))
-        })
+        // for testing
+        context.write(new Text("word"), new DoubleArrayWritable(2, Array(1.1, 1.2, 1.3)))
+
+//        allWords.foreach(word => {
+//          context.write(new Text(word), new DoubleArrayWritable(vec.vocab.wordFrequency(word), vec.getWordVector(word)))
+//        })
       } catch {
         case e: RuntimeException => log.error(s"${e.getMessage}")
         case e: IOException => log.error(s"${e.getMessage}")
