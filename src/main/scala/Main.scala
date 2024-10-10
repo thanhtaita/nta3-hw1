@@ -205,18 +205,25 @@ object HadoopAndDL4jProject {
 
   def getWeightedAverageEmbeddingWord(values: java.lang.Iterable[DoubleArrayWritable]): (Int, Array[Double]) = {
     val scalaValues = values.asScala
-    // get total appearances of the word
+    if (scalaValues.isEmpty) {
+      return (0, Array.empty[Double])  // Return early if there are no values
+    }
+
     val totalCounts = scalaValues.map(_.frequency).sum
-    // for embedding
-    val freqEmbeddings = scalaValues.map((ele) => {
+    val freqEmbeddings = scalaValues.map(ele => {
       ele.array.map(_ * ele.frequency)
     })
-    //// sum the embedding
-    val sumEmbeddings = freqEmbeddings.reduce((arr1, arr2) => arr1.zip(arr2).map{case (x: Double, y: Double) => x + y})
-    //// average the embedding
-    val finalEmbeddings = sumEmbeddings.map(_/totalCounts)
-    (totalCounts, finalEmbeddings)
+
+    val sumEmbeddings = freqEmbeddings.reduceLeftOption((arr1, arr2) => arr1.zip(arr2).map { case (x: Double, y: Double) => x + y })
+    sumEmbeddings match {
+      case Some(sum) =>
+        val finalEmbeddings = sum.map(_ / totalCounts)
+        (totalCounts, finalEmbeddings)
+      case None =>
+        (0, Array.empty[Double])
+    }
   }
+
   class EmbeddingGather extends Reducer[Text, DoubleArrayWritable, Text, Text] {
     @throws(classOf[IOException])
     @throws(classOf[InterruptedException])
