@@ -190,7 +190,7 @@ object HadoopAndDL4jProject {
         val allWords = vec.vocab().words().asScala  // Use asScala from CollectionConverters
 
         // for testing
-//        context.write(new Text("word"), new DoubleArrayWritable(2, Array(1.1, 1.2, 1.3)))
+        context.write(new Text("taita"), new DoubleArrayWritable(2, Array(1.1, 1.2, 1.3)))
 
         allWords.foreach(word => {
           context.write(new Text(word), new DoubleArrayWritable(vec.vocab.wordFrequency(word), vec.getWordVector(word)))
@@ -223,6 +223,12 @@ object HadoopAndDL4jProject {
     override def reduce(key: Text, values: java.lang.Iterable[DoubleArrayWritable], context: Reducer[Text, DoubleArrayWritable, Text, Text]#Context): Unit = {
       // Use reduce to combine the frequencies and embeddings
       log.info("Running reduce")
+      val scalaValues = values.asScala
+      if (scalaValues.isEmpty) {
+        log.warn(s"No values received for key: $key")
+        return
+      }
+
       val (frequency, embeddings) = getWeightedAverageEmbeddingWord(values)
       // Write the result to context (as csv format)
       context.write(key, new Text ((new DoubleArrayWritable(frequency, embeddings)).toString))
