@@ -19,7 +19,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import com.typesafe.config.{Config, ConfigException, ConfigFactory}
 
-import java.io.{BufferedReader, DataInput, DataOutput, File, IOException, InputStreamReader}
+import java.io.{BufferedInputStream, BufferedReader, DataInput, DataOutput, File, IOException, InputStreamReader}
 import java.util.StringTokenizer
 import scala.jdk.CollectionConverters._  // Scala 2.13 uses CollectionConverters
 
@@ -39,7 +39,7 @@ object HadoopAndDL4jProject {
     try {
       if (isHDFSPath(fs.getUri.toString)) {
         val inputStream = fs.open(new Path(fs.getUri + filePath))
-        new BasicLineIterator(inputStream)
+        new BasicLineIterator(new BufferedInputStream(inputStream))
       } else {
         val file = new File(filePath)
         if (!file.exists()) {
