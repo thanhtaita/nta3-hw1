@@ -33,26 +33,63 @@ object HadoopAndDL4jProject {
 
 
   // get suitable SentenceIterator depends on system to work with Word2Vec from deeplearning4j
-  def getSentenceIterator (filePath: String): SentenceIterator = {
+  def getSentenceIterator(filePath: String): SentenceIterator = {
     val config = new Configuration()
     val fs = FileSystem.get(config)
-    try {
-      if (isHDFSPath(fs.getUri.toString)) {
-        val bufferSize = 256 * 1024 * 1024
-        val inputStream = fs.open(new Path(fs.getUri + filePath))
-        new BasicLineIterator(new BufferedInputStream(inputStream, bufferSize))
-      } else {
-        val file = new File(filePath)
-        if (!file.exists()) {
-          log.error(s"Second file not found: $filePath")
-          throw new IOException(s"Second file not found: $filePath")
+
+    new SentenceIterator {
+      var reader: BufferedReader = _
+      var currentLine: String = _
+
+      // Initialize the reader for the first time or on reset
+      def initializeReader(): Unit = {
+        if (isHDFSPath(fs.getUri.toString)) {
+          val inputStream = fs.open(new Path(fs.getUri + filePath))
+          reader = new BufferedReader(new InputStreamReader(inputStream))
+        } else {
+          val file = new File(filePath)
+          if (!file.exists()) {
+            log.error(s"File not found: $filePath")
+            throw new IOException(s"File not found: $filePath")
+          }
+          reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))
         }
-        new LineSentenceIterator(file)
+        currentLine = reader.readLine()
       }
-    } catch {
-      case e: IOException => throw new IOException(s"Can't open file: ${filePath}", e)
+
+      // Call initializeReader on creation
+      initializeReader()
+
+      override def nextSentence(): String = {
+        val sentence = currentLine
+        currentLine = reader.readLine()
+        sentence
+      }
+
+      override def reset(): Unit = {
+        // Reset by reinitializing the reader
+        if (reader != null) {
+          reader.close()
+        }
+        initializeReader()
+      }
+
+      override def hasNext: Boolean = currentLine != null
+
+      override def finish(): Unit = {
+        if (reader != null) {
+          reader.close()
+        }
+      }
+
+      override def setPreProcessor(preProcessor: SentencePreProcessor): Unit = {
+        // Optional: Add pre-processing logic here if needed
+      }
+
+      override def getPreProcessor: SentencePreProcessor = null
     }
   }
+
 
   def trainModel(inputFilePath: String): Word2Vec = {
     try {
