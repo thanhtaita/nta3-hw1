@@ -39,7 +39,37 @@ object HadoopAndDL4jProject {
     try {
       if (isHDFSPath(fs.getUri.toString)) {
         val inputStream = fs.open(new Path(fs.getUri + filePath))
-        new BasicLineIterator(new BufferedInputStream(inputStream))
+        val reader = new BufferedReader(new InputStreamReader(inputStream))
+
+        // Custom SentenceIterator for InputStream
+        new SentenceIterator {
+          var currentLine: String = reader.readLine()
+
+          override def nextSentence(): String = {
+            val sentence = currentLine
+            currentLine = reader.readLine()
+            sentence
+          }
+
+          override def reset(): Unit = {
+            throw new UnsupportedOperationException("Reset not supported")
+          }
+
+          override def hasNext: Boolean = {
+            currentLine != null
+          }
+
+          override def finish(): Unit = {
+            reader.close()
+          }
+
+          override def setPreProcessor(preProcessor: SentencePreProcessor): Unit = {
+            // Implement pre-processing if needed, or leave empty
+          }
+
+          override def getPreProcessor: SentencePreProcessor = null
+        }
+
       } else {
         val file = new File(filePath)
         if (!file.exists()) {
