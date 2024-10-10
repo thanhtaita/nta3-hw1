@@ -31,7 +31,6 @@ object HadoopAndDL4jProject {
     filePath.startsWith("hdfs://");
   }
 
-
   // get suitable SentenceIterator depends on system to work with Word2Vec from deeplearning4j
   def getSentenceIterator(filePath: String): SentenceIterator = {
     val config = new Configuration()
@@ -43,17 +42,17 @@ object HadoopAndDL4jProject {
 
       // Initialize the reader for the first time or on reset
       def initializeReader(): Unit = {
-        if (isHDFSPath(fs.getUri.toString)) {
-          val inputStream = fs.open(new Path(fs.getUri + filePath))
-          reader = new BufferedReader(new InputStreamReader(inputStream))
+        // Check if the file is on HDFS
+        val fullPath = if (isHDFSPath(fs.getUri.toString)) {
+          // Append the HDFS URI to the file path if running on HDFS
+          new Path(fs.getUri.toString + filePath)
         } else {
-          val file = new File(filePath)
-          if (!file.exists()) {
-            log.error(s"File not found: $filePath")
-            throw new IOException(s"File not found: $filePath")
-          }
-          reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))
+          new Path(filePath)
         }
+
+        // Open the file using Hadoop's FileSystem
+        val inputStream = fs.open(fullPath)
+        reader = new BufferedReader(new InputStreamReader(inputStream))
         currentLine = reader.readLine()
       }
 
