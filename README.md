@@ -24,4 +24,4 @@ Start the SBT shell by typing: sbt -> test
 6. After running, Hadoop will return a summary of the MapReduce execution. You can base on this to see if the output is created.
 
 ### Some tips to debug
-The program integrates Logback with SL4J to log all the necessary information during the execution process. You can find these logs via on the Hadoop UI, or navigate to the userlogs folder on your local's filesystem. Remember to choose the correct folder of the application process you want to check. Each application process logs the process, and you can check it in the folder syslog..
+The program integrates Logback with SL4J to log all the necessary information during the execution process. You can find these logs via on the Hadoop UI, or navigate to the userlogs folder on your local's filesystem. Remember to choose the correct folder of the application process you want to check. Each application process logs the process, and you can check it in the folder syslog.
